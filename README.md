@@ -10,6 +10,7 @@ data MCD_DATA ;
 ;
 run;
 
+
 //**filter main data set by depression**//
 
 
@@ -17,6 +18,7 @@ DATA MCD_DATA_sub ;
     SET  MCD_DATA ;
     WHERE Episode_Disease_Category like  "Dep%" ;
 RUN;
+
 
 //**load population data**//
 
@@ -40,6 +42,7 @@ proc sql ;
      	  order by CENSUS2010POP desc;
 
 
+
 //**add ER per ben, and Ip per ben**//
 
 data GEO_CROSS_1;
@@ -59,10 +62,12 @@ proc logistic data=WORK.GEO_CROSS_FINAL;
 model Dual_Eligible(event='Non-Dual')=ER_PER_BEN / link=logit technique=fisher;
 run;
 
-//**first hypothesis test  dual**//	
+//**first hypothesis test  dual**//
+
 proc logistic data=WORK.GEO_CROSS_FINAL;
 model Dual_Eligible(event='Dual')=ER_PER_BEN / link=logit technique=fisher;
 run;
+
 
 //**second hypothesis test - linear regression population to er visits**//
 
@@ -81,6 +86,7 @@ proc sgplot data=WORK.GEO_CROSS_FINAL;
 	xaxis grid;
 	yaxis grid;
 run;
+
 
 
 //**load income data**//
