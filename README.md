@@ -1,6 +1,6 @@
 # capstone
 
-//**load main ER data set **//
+//**load main ER data set**//
 
 data MCD_DATA ;
 	infile '/home/u49451409/MCDDATA.csv' dlm=',' firstobs=2;
@@ -10,7 +10,7 @@ data MCD_DATA ;
 ;
 run;
 
-//**filter main data set by depression **//
+//**filter main data set by depression**//
 
 
 DATA MCD_DATA_sub ;
@@ -18,7 +18,7 @@ DATA MCD_DATA_sub ;
     WHERE Episode_Disease_Category like  "Dep%" ;
 RUN;
 
-//**load population data **//
+//**load population data**//
 
 data WORK.POP ;
 	infile '/home/u49451409/nyc_pop_data.csv' dlm=',' firstobs=2;
@@ -27,7 +27,7 @@ data WORK.POP ;
 run;
 
 
-//**cross reference population data with ER MCD dataset **//
+//**cross reference population data with ER MCD dataset**//
 
 libname libref 'SAS-library';
 proc sql ;
@@ -40,7 +40,7 @@ proc sql ;
      	  order by CENSUS2010POP desc;
 
 
-//**add ER per ben, and Ip per ben **//
+//**add ER per ben, and Ip per ben**//
 
 data GEO_CROSS_1;
 	set  WORK.GEO_CROSS;
@@ -53,18 +53,18 @@ data GEO_CROSS_FINAL;
 	
 
 
-//**first hypothesis test  non-dual **//	
+//**first hypothesis test  non-dual**//	
 
 proc logistic data=WORK.GEO_CROSS_FINAL;
 model Dual_Eligible(event='Non-Dual')=ER_PER_BEN / link=logit technique=fisher;
 run;
 
-//**first hypothesis test  dual **//	
+//**first hypothesis test  dual**//	
 proc logistic data=WORK.GEO_CROSS_FINAL;
 model Dual_Eligible(event='Dual')=ER_PER_BEN / link=logit technique=fisher;
 run;
 
-//**second hypothesis test - linear regression population to er visits  **//
+//**second hypothesis test - linear regression population to er visits**//
 
 proc reg data=WORK.GEO_CROSS_FINAL alpha=0.05 plots(only)=(diagnostics 
 		residuals fitplot observedbypredicted);
@@ -73,7 +73,7 @@ proc reg data=WORK.GEO_CROSS_FINAL alpha=0.05 plots(only)=(diagnostics
 quit;
 
 
-//**correlation graph population to er visits **//
+//**correlation graph population to er visits**//
 
 
 proc sgplot data=WORK.GEO_CROSS_FINAL;
@@ -83,7 +83,7 @@ proc sgplot data=WORK.GEO_CROSS_FINAL;
 run;
 
 
-//**load income data   **//
+//**load income data**//
 
 FILENAME REFFILE '/home/u49451409/nyc_inc_data.csv';
 PROC IMPORT DATAFILE=REFFILE
@@ -95,7 +95,7 @@ PROC CONTENTS DATA=WORK.INC; RUN;
 
 
 
-//**cross reference income data **//
+//**cross reference income data**//
 
 libname libref 'SAS-library';
 proc sql ;
@@ -116,7 +116,7 @@ proc reg data=WORK.INC_CROSS alpha=0.05 plots(only)=(diagnostics residuals
 quit;
 
 
-//**correlation graph median income to beneficiaries with depression **//
+//**correlation graph median income to beneficiaries with depression**//
 
 
 proc sgplot data=WORK.INC_CROSS;
@@ -127,7 +127,7 @@ run;
 
 
 
-//**summary data - dual & non-dual **//
+//**summary data - dual & non-dual**//
 
 //**non-dual**//
 
